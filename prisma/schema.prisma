@@ -1,0 +1,886 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+    USER
+    ADMIN
+}
+
+model User {
+    id            String          @id @default(cuid()) /// @zod.custom.omit(["model","input"])
+    name          String?
+    email         String?         @unique
+    emailVerified DateTime?
+    image         String?
+    userRole      UserRole
+    accounts      Account[]
+    sessions      Session[]
+    posts         Post[]
+    rates         Rate[]
+    create        UserCreateData?
+    update        UserUpdateData?
+}
+
+model Account {
+    id                String  @id @default(cuid())
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?
+    access_token      String?
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String?
+    session_state     String?
+    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId            String
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId       String
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+model Post {
+    id          String   @id @default(cuid())
+    name        String
+    createdAt   DateTime
+    updatedAt   DateTime @updatedAt
+    createdBy   User     @relation(fields: [createdById], references: [id])
+    createdById String
+
+    @@index([name])
+}
+
+// 以下是托拉姆的数据模型
+
+// 用户创建内容
+model UserCreateData {
+    characters           Character[]
+    monsters             Monster[]
+    crystals             Crystal[]
+    mainWeapons          MainWeapon[]
+    subWeapons           SubWeapon[]
+    bodyArmors           BodyArmor[]
+    additionalEquipments AdditionalEquipment[]
+    specialEquipments    SpecialEquipment[]
+    pets                 Pet[]
+    skills               Skill[]
+    consumables          Consumable[]
+    combos               Combo[]
+    analyzers            Analyzer[]
+    belongToUser         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId               String                @id
+}
+
+// 用户更新内容
+model UserUpdateData {
+    monsters             Monster[]
+    crystals             Crystal[]
+    mainWeapons          MainWeapon[]
+    subWeapons           SubWeapon[]
+    bodyArmors           BodyArmor[]
+    additionalEquipments AdditionalEquipment[]
+    specialEquipments    SpecialEquipment[]
+    pets                 Pet[]
+    skills               Skill[]
+    consumables          Consumable[]
+    belongToUser         User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId               String                @id
+    Character            Character[]
+    Analyzer             Analyzer[]
+}
+
+model Rate {
+    id                 String      @id @default(cuid())
+    rate               Int
+    belongToUser       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId             String
+    belongToStatistics Statistics? @relation(fields: [statisticsId], references: [id])
+    statisticsId       String?
+}
+
+model UsageTimestamps {
+    timestamp        DateTime    @id
+    usedByStatistics Statistics? @relation(fields: [statisticsId], references: [id])
+    statisticsId     String?
+}
+
+model ViewTimestamps {
+    timestamp        DateTime    @id
+    usedByStatistics Statistics? @relation(fields: [statisticsId], references: [id])
+    statisticsId     String?
+}
+
+model Statistics {
+    id              String            @id @default(cuid())
+    usageTimestamps UsageTimestamps[]
+    viewTimestamps  ViewTimestamps[]
+    rates           Rate[]
+
+    belongToMonster             Monster?             @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+    monsterId                   String?              @unique
+    belongToCrystal             Crystal?             @relation(fields: [crystalId], references: [id])
+    crystalId                   String?              @unique
+    belongToMainWeapon          MainWeapon?          @relation(fields: [mainWeaponId], references: [id])
+    mainWeaponId                String?              @unique
+    belongToSubWeapon           SubWeapon?           @relation(fields: [subWeaponId], references: [id])
+    subWeaponId                 String?              @unique
+    belongToBodyArmor           BodyArmor?           @relation(fields: [bodyArmorId], references: [id])
+    bodyArmorId                 String?              @unique
+    belongToAdditionalEquipment AdditionalEquipment? @relation(fields: [additionalEquipmentId], references: [id])
+    additionalEquipmentId       String?              @unique
+    belongToSpecialEquipment    SpecialEquipment?    @relation(fields: [specialEquipmentId], references: [id])
+    specialEquipmentId          String?              @unique
+    belongToSkill               Skill?               @relation(fields: [skillId], references: [id])
+    skillId                     String?              @unique
+    belongToPet                 Pet?                 @relation(fields: [petId], references: [id])
+    petId                       String?              @unique
+    belongToConsumable          Consumable?          @relation(fields: [consumableId], references: [id])
+    consumableId                String?              @unique
+    Character                   Character?           @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    characterId                 String?              @unique
+    Analyzer                    Analyzer?            @relation(fields: [analyzerId], references: [id], onDelete: Cascade)
+    analyzerId                  String?              @unique
+}
+
+// 可公开资源的状态枚举
+enum State {
+    PRIVATE
+    PUBLIC
+}
+
+// 元素属性枚举
+enum Element {
+    NO_ELEMENT
+    LIGHT
+    DARK
+    WATER
+    FIRE
+    EARTH
+    WIND
+}
+
+// 怪物分类枚举
+enum MonsterType {
+    COMMON_MOBS
+    COMMON_MINI_BOSS
+    COMMON_BOSS
+    EVENT_MOBS
+    EVENT_MINI_BOSS
+    EVENT_BOSS
+}
+
+// 怪物模型
+model Monster {
+    id String @id @default(cuid())
+
+    name                             String ///  @zod.string.min(2, { message: "最少2个字符" })
+    monsterType                      MonsterType
+    baseLv                           Int?
+    experience                       Int?
+    address                          String?
+    element                          Element
+    radius                           Int?
+    maxhp                            Int?
+    physicalDefense                  Int?
+    physicalResistance               Int?
+    magicalDefense                   Int?
+    magicalResistance                Int?
+    criticalResistance               Int?
+    avoidance                        Int?
+    dodge                            Int?
+    block                            Int?
+    normalAttackResistanceModifier   Int?
+    physicalAttackResistanceModifier Int?
+    magicalAttackResistanceModifier  Int?
+    difficultyOfTank                 Int
+    difficultyOfMelee                Int
+    difficultyOfRanged               Int
+    possibilityOfRunningAround       Int
+    extraDetails                     String?
+    dataSources                      String?
+
+    belongToAnalyzers Analyzer[]
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 加成值名称枚举
+enum ModifiersName {
+    // 能力值
+    STR // 力量
+    INT // 智力
+    VIT // 耐力
+    AGI // 敏捷
+    DEX // 灵巧
+    // 基础属性
+    MAX_MP // 最大MP
+    AGGRO // 仇恨值
+    WEAPON_RANGE // 武器射程
+    HP_REGEN // HP自然回复
+    MP_REGEN // MP自然回复
+    // 单次伤害增幅
+    PHYSICAL_ATK // 物理攻击
+    MAGICAL_ATK // 魔法攻击
+    WEAPON_ATK // 武器攻击
+    UNSHEATHE_ATK // 拔刀攻击
+    PHYSICAL_PIERCE // 物理贯穿
+    MAGICAL_PIERCE // 魔法贯穿
+    CRITICAL_RATE // 暴击率
+    CRITICAL_DAMAGE // 暴击伤害
+    MAGIC_CRT_CONVERSION_RATE // 魔法暴击转化率
+    MAGIC_CRT_DAMAGE_CONVERSION_RATE // 魔法爆伤转化率
+    SHORT_RANGE_DAMAGE // 近距离威力
+    LONG_RANGE_DAMAGE // 远距离威力
+    STRONGER_AGAINST_NETURAL // 对无属性增强
+    STRONGER_AGAINST_LIGHT // 对光属性增强
+    STRONGER_AGAINST_DARK // 对暗属性增强
+    STRONGER_AGAINST_WATER // 对水属性增强
+    STRONGER_AGAINST_FIRE // 对火属性增强
+    STRONGER_AGAINST_EARTH // 对地属性增强
+    STRONGER_AGAINST_WIND // 对风属性增强
+    STABILITY // 稳定率
+    ACCURACY // 命中
+    ADDITIONAL_PHYSICS // 物理追击
+    ADDITIONAL_MAGIC // 魔法追击
+    ANTICIPATE // 看穿
+    GUARD_BREAK // 破防
+    REFLECT // 反弹伤害
+    ABSOLUTA_ACCURACY // 绝对命中
+    ATK_UP_STR // 物理攻击提升（力量）
+    ATK_UP_INT // 物理攻击提升（智力）
+    ATK_UP_VIT // 物理攻击提升（耐力）
+    ATK_UP_AGI // 物理攻击提升（敏捷）
+    ATK_UP_DEX // 物理攻击提升（灵巧）
+    MATK_UP_STR // 魔法攻击提升（力量）
+    MATK_UP_INT // 魔法攻击提升（智力）
+    MATK_UP_VIT // 魔法攻击提升（耐力）
+    MATK_UP_AGI // 魔法攻击提升（敏捷）
+    MATK_UP_DEX // 魔法攻击提升（灵巧）
+    ATK_DOWN_STR // 物理攻击下降（力量）
+    ATK_DOWN_INT // 物理攻击下降（智力）
+    ATK_DOWN_VIT // 物理攻击下降（耐力）
+    ATK_DOWN_AGI // 物理攻击下降（敏捷）
+    ATK_DOWN_DEX // 物理攻击下降（灵巧）
+    MATK_DOWN_STR // 魔法攻击下降（力量）
+    MATK_DOWN_INT // 魔法攻击下降（智力）
+    MATK_DOWN_VIT // 魔法攻击下降（耐力）
+    MATK_DOWN_AGI // 魔法攻击下降（敏捷）
+    MATK_DOWN_DEX // 魔法攻击下降（灵巧）
+    // 生存能力加成
+    MAX_HP // 最大HP
+    PHYSICAL_DEF // 物理防御
+    MAGICAL_DEF // 魔法防御
+    PHYSICAL_RESISTANCE // 物理抗性
+    MAGICAL_RESISTANCE // 魔法抗性
+    NEUTRAL_RESISTANCE // 无属性抗性
+    LIGHT_RESISTANCE // 光属性抗性
+    DARK_RESISTANCE // 暗属性抗性
+    WATER_RESISTANCE // 水属性抗性
+    FIRE_RESISTANCE // 火属性抗性
+    EARTH_RESISTANCE // 地属性抗性
+    WIND_RESISTANCE // 风属性抗性
+    DODGE // 回避
+    AILMENT_RESISTANCE // 异常抗性
+    BASE_GUARD_POWER // 基础格挡力
+    GUARD_POWER // 格挡力
+    BASE_GUARD_RECHARGE // 基础格挡回复
+    GUARD_RECHANGE // 格挡回复
+    EVASION_RECHARGE // 闪躲回复
+    PHYSICAL_BARRIER // 物理屏障
+    MAGICAL_BARRIER // 魔法屏障
+    FRACTIONAL_BARRIER // 百分比瓶屏障
+    BARRIER_COOLDOWN // 屏障回复速度
+    REDUCE_DMG_FLOOR // 地面伤害减轻（地刺）
+    REDUCE_DMG_METEOR // 陨石伤害减轻（天火）
+    REDUCE_DMG_PLAYER_EPICENTER // 范围伤害减轻（以玩家为中心的范围伤害）
+    REDUCE_DMG_FOE_EPICENTER // 敌方周围伤害减轻（以怪物自身为中心的范围伤害）
+    REDUCE_DMG_BOWLING // 贴地伤害减轻（剑气、风刃）
+    REDUCE_DMG_BULLET // 子弹伤害减轻（各种球）
+    REDUCE_DMG_STRAIGHT_LINE // 直线伤害减轻（激光）
+    REDUCE_DMG_CHARGE // 冲撞伤害减轻（怪物的位移技能）
+    ABSOLUTE_DODGE // 绝对回避
+    // 速度加成
+    ASPD // 攻击速度
+    CSPD // 咏唱速度
+    MSPD // 行动速度
+    // 其他加成 
+    DROP_RATE // 掉宝率
+    REVIVE_TIME // 复活时间
+    FLINCH_UNAVAILABLE // 封印胆怯
+    TUMBLE_UNAVAILABLE // 封印翻覆
+    STUN_UNAVAILABLE // 封印昏厥
+    INVINCIBLE_AID // 无敌急救
+    EXP_RATE // 经验加成
+    PET_EXP // 宠物经验
+    ITEM_COOLDOWN // 道具冷却
+    RECOIL_DAMAGE // 反作用伤害
+    GEM_POWDER_DROP // 晶石粉末掉落
+}
+
+// 单项加成数据模型
+model Modifier {
+    id                    String          @id @default(cuid())
+    formula               String
+    belongToModifiersList ModifiersList[]
+}
+
+// 加成项集（附魔等）模型
+model ModifiersList {
+    id String @id @default(cuid())
+
+    name      String?
+    modifiers Modifier[]
+
+    usedByMainWeapon          MainWeapon[]
+    usedBySubWeapon           SubWeapon[]
+    usedByBodyArmor           BodyArmor[]
+    usedByAdditionalEquipment AdditionalEquipment[]
+    usedBySpecialEquipment    SpecialEquipment[]
+    usedByCrystal             Crystal[]
+    usedByFashion             Character?            @relation("FashionRelation")
+    usedByCuisine             Character?            @relation("CuisineRelation")
+    usedByModifiersList       Character?            @relation("ModifiersListRelation")
+    Consumable                Consumable[]
+}
+
+enum CharacterType {
+    Tank
+    Mage
+    Ranger
+    Marksman
+}
+
+// 机体模型
+model Character {
+    id            String        @id @default(cuid())
+    name          String
+    characterType CharacterType
+
+    lv                     Int
+    baseStr                Int
+    baseInt                Int
+    baseVit                Int
+    baseAgi                Int
+    baseDex                Int
+    specialAbiType         SpecialAbiType
+    specialAbiValue        Int
+    mainWeapon             MainWeapon          @relation(fields: [mainWeaponId], references: [id])
+    mainWeaponId           String
+    subWeapon              SubWeapon           @relation(fields: [subWeaponId], references: [id])
+    subWeaponId            String
+    bodyArmor              BodyArmor           @relation(fields: [bodyArmorId], references: [id])
+    bodyArmorId            String
+    additionalEquipment    AdditionalEquipment @relation(fields: [additionalEquipmentId], references: [id])
+    additionalEquipmentId  String
+    specialEquipment       SpecialEquipment    @relation(fields: [specialEquipmentId], references: [id])
+    specialEquipmentId     String
+    fashion                ModifiersList       @relation("FashionRelation", fields: [fashionModifiersListId], references: [id])
+    fashionModifiersListId String              @unique
+    cuisine                ModifiersList       @relation("CuisineRelation", fields: [CuisineModifiersListId], references: [id])
+    CuisineModifiersListId String              @unique
+    pet                    Pet                 @relation(fields: [petId], references: [id])
+    petId                  String
+    modifiersList          ModifiersList       @relation("ModifiersListRelation", fields: [modifiersListId], references: [id])
+    modifiersListId        String              @unique
+    skillList              Skill[]
+    consumableList         Consumable[]
+    combos                 Combo[]
+    belongToAnalyzers      Analyzer[]
+
+    extraDetails String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 特殊能力值类型枚举
+enum SpecialAbiType {
+    NULL
+    LUK
+    CRI
+    TEC
+    MEN
+}
+
+// 锻晶类型枚举
+enum CrystalType {
+    GENERAL
+    WEAPONCRYSTAL
+    BODYCRYSTAL
+    ADDITIONALCRYSTAL
+    SPECIALCRYSTAL
+}
+
+// 锻晶模型
+model Crystal {
+    id String @id @default(cuid())
+
+    name            String
+    crystalType     CrystalType
+    front           Int
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
+
+    usedByMainWeapon          MainWeapon[]
+    usedByBodyArmor           BodyArmor[]
+    usedByAdditionalEquipment AdditionalEquipment[]
+    usedBySpecialEquipment    SpecialEquipment[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 主武器类型枚举
+enum MainWeaponType {
+    NO_WEAPON
+    ONE_HAND_SWORD
+    TWO_HANDS_SWORD
+    BOW
+    BOWGUN
+    STAFF
+    MAGIC_DEVICE
+    KNUCKLE
+    HALBERD
+    KATANA
+}
+
+// 副武器类型枚举
+enum SubWeaponType {
+    NO_WEAPON
+    ONE_HAND_SWORD
+    MAGIC_DEVICE
+    KNUCKLE
+    KATANA
+    ARROW
+    DAGGER
+    NINJUTSUSCROLL
+    SHIELD
+}
+
+// 主武器模型
+model MainWeapon {
+    id String @id @default(cuid())
+
+    name            String
+    mainWeaponType  MainWeaponType
+    baseAtk         Int
+    refinement      Int
+    stability       Int
+    element         Element
+    modifiersList   ModifiersList  @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
+    crystal         Crystal[]
+
+    usedBy Character[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 副武器模型
+model SubWeapon {
+    id String @id @default(cuid())
+
+    name            String
+    subWeaponType   SubWeaponType
+    baseAtk         Int
+    refinement      Int
+    stability       Int
+    element         Element
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
+    usedBy          Character[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 身体装备轻重化类型枚举
+enum BodyArmorType {
+    NORMAL
+    LIGHT
+    HEAVY
+}
+
+// 身体装备模型
+model BodyArmor {
+    id String @id @default(cuid())
+
+    name            String
+    bodyArmorType   BodyArmorType
+    refinement      Int
+    baseDef         Int
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
+    crystal         Crystal[]
+
+    usedBy Character[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 追加装备模型
+model AdditionalEquipment {
+    id String @id @default(cuid())
+
+    name            String
+    refinement      Int
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
+    crystal         Crystal[]
+
+    usedBy Character[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 特殊装备模型
+model SpecialEquipment {
+    id String @id @default(cuid())
+
+    name            String
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
+    crystal         Crystal[]
+
+    usedBy Character[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+enum SkillTreeName {
+    BLADE
+    SHOT
+    MAGIC
+    MARTIAL
+    DUALSWORD
+    HALBERD
+    MONONOFU
+    CRUSHER
+    SPRITE
+}
+
+enum WeaponElementDependencyType {
+    TRUE
+    FALSE
+}
+
+// 技能卡片模型
+model Skill {
+    id String @id @default(uuid())
+
+    skillTreeName               SkillTreeName
+    name                        String
+    skillType                   SkillType
+    weaponElementDependencyType WeaponElementDependencyType
+    element                     Element
+    skillDescription            String?
+    skillEffect                 SkillEffect[]
+
+    usedBySkillList Character[]
+    usedByComboStep ComboStep[]
+    usedByStep      Step[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+enum SkillType {
+    ACTIVE_SKILL
+    PASSIVE_SKILL
+}
+
+enum SkillExtraActionType {
+    None
+    Chanting
+    Charging
+}
+
+// 技能效果
+model SkillEffect {
+    id String @id @default(cuid())
+
+    condition                         String
+    description                       String?
+    actionBaseDurationFormula         String
+    actionModifiableDurationFormula   String
+    skillExtraActionType              SkillExtraActionType
+    chantingBaseDurationFormula       String
+    chantingModifiableDurationFormula String
+    chargingBaseDurationFormula       String
+    chargingModifiableDurationFormula String
+    skillStartupFramesFormula         String?
+    skillCost                         SkillCost[]
+    skillYield                        SkillYield[]
+
+    belongToSkill   Skill  @relation(fields: [belongToskillId], references: [id], onDelete: Cascade)
+    belongToskillId String
+}
+
+// 技能消耗
+model SkillCost {
+    id String @id @default(cuid())
+
+    name        String?
+    costFormula String
+
+    belongToSkillEffect SkillEffect? @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
+    skillEffectId       String?
+}
+
+// 技能效果类型枚举
+enum YieldType {
+    ImmediateEffect
+    PersistentEffect
+}
+
+// 技能效果
+model SkillYield {
+    id String @id @default(cuid())
+
+    name                  String?
+    yieldType             YieldType
+    yieldFormula          String
+    mutationTimingFormula String?
+
+    belongToSkillEffect SkillEffect? @relation(fields: [skillEffectId], references: [id], onDelete: Cascade)
+    skillEffectId       String?
+}
+
+// 效果有效期类型枚举
+enum DurationType {
+    FRAME
+    SKILL
+    UNLIMITED
+}
+
+// 宠物模型
+model Pet {
+    id String @id @default(cuid())
+
+    name String?
+
+    usedBy Character[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 消耗品类型枚举
+enum ConsumableType {
+    HP
+    MP
+    ATK
+    MATK
+    SPEED
+    CSPEED
+    STRONGER
+    HIT
+    AVO
+}
+
+// 消耗品模型
+model Consumable {
+    id String @id @default(cuid())
+
+    name            String
+    modifiersList   ModifiersList @relation(fields: [modifiersListId], references: [id])
+    modifiersListId String
+
+    usedBy Character[]
+
+    extraDetails String?
+    dataSources  String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 分析器模型
+model Analyzer {
+    id String @id @default(cuid())
+
+    name        String?
+    monster     Monster?   @relation(fields: [monsterId], references: [id])
+    monsterId   String?
+    character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    characterId String?
+    processes   Process[]
+
+    extraDetails String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 连击模型
+model Combo {
+    id String @id @default(cuid())
+
+    name      String?
+    comboStep ComboStep[]
+
+    usedBy           Character[]
+    UserCreateData   UserCreateData? @relation(fields: [userCreateUserId], references: [userId])
+    userCreateUserId String?
+}
+
+enum ComboType {
+    NULL
+}
+
+model ComboStep {
+    id String @id @default(cuid())
+
+    order     Int
+    comboType ComboType
+    skill     Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+    skillId   String
+
+    belongToCombo Combo  @relation(fields: [comboId], references: [id], onDelete: Cascade)
+    comboId       String
+}
+
+// 输出流程模型
+model Process {
+    id String @id @default(cuid())
+
+    steps Step[]
+
+    belongToAnalyzer Analyzer @relation(fields: [analyzerId], references: [id], onDelete: Cascade)
+    analyzerId       String
+}
+
+// 输出流程步骤模型
+model Step {
+    id String @id @default(cuid())
+
+    order   Int
+    skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+    skillId String
+
+    belongToProcess Process @relation(fields: [processId], references: [id], onDelete: Cascade)
+    processId       String
+}

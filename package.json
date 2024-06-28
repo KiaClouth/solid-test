@@ -1,0 +1,36 @@
+{
+  "name": "solid-test",
+  "type": "module",
+  "scripts": {
+    "backend:start": "pnpm electric-sql start --with-postgres",
+    "backend:stop": "pnpm electric-sql stop",
+    "backend:up": "pnpm electric-sql start --with-postgres --detach",
+    "backend:down": "pnpm electric-sql stop --remove",
+    "client:generate": "pnpm electric-sql generate",
+    "client:watch": "pnpm electric-sql generate --watch",
+    "db:migrate": "pnpm electric-sql with-config \"pnpm pg-migrations apply --database {{ELECTRIC_PROXY}} --directory ./db/migrations\"",
+    "db:psql": "pnpm electric-sql psql",
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start"
+  },
+  "dependencies": {
+    "@databases/pg-migrations": "^5.0.3",
+    "@electric-sql/pglite": "0.1.5",
+    "@prisma/client": "4.8.1",
+    "@solidjs/router": "latest",
+    "@solidjs/start": "^1.0.2",
+    "@tailwindcss/typography": "^0.5.13",
+    "autoprefixer": "^10.4.19",
+    "electric-sql": "^0.12.1",
+    "postcss": "^8.4.38",
+    "prisma": "4.8.1",
+    "solid-js": "^1.8.17",
+    "tailwindcss": "^3.4.3",
+    "vinxi": "latest",
+    "zod": "3.21.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
