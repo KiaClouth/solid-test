@@ -28,10 +28,7 @@ dependencies:
     version: 10.4.19(postcss@8.4.38)
   electric-sql:
     specifier: ^0.12.1
-    version: 0.12.1(@electric-sql/pglite@0.1.5)(pg@8.12.0)(prisma@4.8.1)(zod@3.21.1)
-  postcss:
-    specifier: ^8.4.38
-    version: 8.4.38
+    version: 0.12.1(@electric-sql/pglite@0.1.5)(pg@8.12.0)(prisma@4.8.1)(wa-sqlite@0.9.14)(zod@3.21.1)
   prisma:
     specifier: 4.8.1
     version: 4.8.1
@@ -44,9 +41,23 @@ dependencies:
   vinxi:
     specifier: latest
     version: 0.3.12(@opentelemetry/api@1.9.0)
+  wa-sqlite:
+    specifier: github:rhashimoto/wa-sqlite#semver:^0.9.11
+    version: github.com/rhashimoto/wa-sqlite/6dbe4f044502a7a285e815896f56304a808fe25b
   zod:
     specifier: 3.21.1
     version: 3.21.1
+
+devDependencies:
+  postcss:
+    specifier: ^8.4.38
+    version: 8.4.38
+  prettier:
+    specifier: ^3.2.4
+    version: 3.3.2
+  prettier-plugin-tailwindcss:
+    specifier: ^0.5.7
+    version: 0.5.14(prettier@3.3.2)
 
 packages:
 
@@ -3087,7 +3098,7 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: false
 
-  /electric-sql@0.12.1(@electric-sql/pglite@0.1.5)(pg@8.12.0)(prisma@4.8.1)(zod@3.21.1):
+  /electric-sql@0.12.1(@electric-sql/pglite@0.1.5)(pg@8.12.0)(prisma@4.8.1)(wa-sqlite@0.9.14)(zod@3.21.1):
     resolution: {integrity: sha512-d9THXiZSIX+B255uJwR1HFsD3RjZcQrZHAFdmIQvFSGzIrEXVhreMrrCOB+CcbETFZg1ARdZEhGSe4MBXGC6/g==}
     hasBin: true
     peerDependencies:
@@ -3172,6 +3183,7 @@ packages:
       tcp-port-used: 1.0.2
       text-encoder-lite: 2.0.0
       ts-dedent: 2.2.0
+      wa-sqlite: github.com/rhashimoto/wa-sqlite/6dbe4f044502a7a285e815896f56304a808fe25b
       ws: 8.17.1
       zod: 3.21.1
     transitivePeerDependencies:
@@ -4802,7 +4814,6 @@ packages:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
-    dev: false
 
   /napi-build-utils@1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
@@ -5296,7 +5307,6 @@ packages:
 
   /picocolors@1.0.1:
     resolution: {integrity: sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==}
-    dev: false
 
   /picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -5419,7 +5429,6 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.1
       source-map-js: 1.2.0
-    dev: false
 
   /postgres-array@2.0.0:
     resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
@@ -5461,6 +5470,67 @@ packages:
       tar-fs: 2.1.1
       tunnel-agent: 0.6.0
     dev: false
+
+  /prettier-plugin-tailwindcss@0.5.14(prettier@3.3.2):
+    resolution: {integrity: sha512-Puaz+wPUAhFp8Lo9HuciYKM2Y2XExESjeT+9NQoVFXZsPPnc9VYss2SpxdQ6vbatmt8/4+SN0oe0I1cPDABg9Q==}
+    engines: {node: '>=14.21.3'}
+    peerDependencies:
+      '@ianvs/prettier-plugin-sort-imports': '*'
+      '@prettier/plugin-pug': '*'
+      '@shopify/prettier-plugin-liquid': '*'
+      '@trivago/prettier-plugin-sort-imports': '*'
+      '@zackad/prettier-plugin-twig-melody': '*'
+      prettier: ^3.0
+      prettier-plugin-astro: '*'
+      prettier-plugin-css-order: '*'
+      prettier-plugin-import-sort: '*'
+      prettier-plugin-jsdoc: '*'
+      prettier-plugin-marko: '*'
+      prettier-plugin-organize-attributes: '*'
+      prettier-plugin-organize-imports: '*'
+      prettier-plugin-sort-imports: '*'
+      prettier-plugin-style-order: '*'
+      prettier-plugin-svelte: '*'
+    peerDependenciesMeta:
+      '@ianvs/prettier-plugin-sort-imports':
+        optional: true
+      '@prettier/plugin-pug':
+        optional: true
+      '@shopify/prettier-plugin-liquid':
+        optional: true
+      '@trivago/prettier-plugin-sort-imports':
+        optional: true
+      '@zackad/prettier-plugin-twig-melody':
+        optional: true
+      prettier-plugin-astro:
+        optional: true
+      prettier-plugin-css-order:
+        optional: true
+      prettier-plugin-import-sort:
+        optional: true
+      prettier-plugin-jsdoc:
+        optional: true
+      prettier-plugin-marko:
+        optional: true
+      prettier-plugin-organize-attributes:
+        optional: true
+      prettier-plugin-organize-imports:
+        optional: true
+      prettier-plugin-sort-imports:
+        optional: true
+      prettier-plugin-style-order:
+        optional: true
+      prettier-plugin-svelte:
+        optional: true
+    dependencies:
+      prettier: 3.3.2
+    dev: true
+
+  /prettier@3.3.2:
+    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
 
   /pretty-bytes@6.1.1:
     resolution: {integrity: sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==}
@@ -6029,7 +6099,6 @@ packages:
   /source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
     engines: {node: '>=0.10.0'}
-    dev: false
 
   /source-map-support@0.5.21:
     resolution: {integrity: sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==}
@@ -7065,4 +7134,10 @@ packages:
 
   /zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+    dev: false
+
+  github.com/rhashimoto/wa-sqlite/6dbe4f044502a7a285e815896f56304a808fe25b:
+    resolution: {tarball: https://codeload.github.com/rhashimoto/wa-sqlite/tar.gz/6dbe4f044502a7a285e815896f56304a808fe25b}
+    name: wa-sqlite
+    version: 0.9.14
     dev: false
