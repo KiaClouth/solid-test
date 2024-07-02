@@ -23,7 +23,6 @@
     "@tailwindcss/typography": "^0.5.13",
     "autoprefixer": "^10.4.19",
     "electric-sql": "^0.12.1",
-    "wa-sqlite": "github:rhashimoto/wa-sqlite#semver:^0.9.11",
     "prisma": "4.8.1",
     "solid-js": "^1.8.17",
     "tailwindcss": "^3.4.3",
@@ -31,9 +30,9 @@
     "zod": "3.21.1"
   },
   "devDependencies": {
+    "postcss": "^8.4.38",
     "prettier": "^3.2.4",
-    "prettier-plugin-tailwindcss": "^0.5.7",
-    "postcss": "^8.4.38"
+    "prettier-plugin-tailwindcss": "^0.5.7"
   },
   "engines": {
     "node": ">=18"

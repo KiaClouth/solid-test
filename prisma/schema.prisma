@@ -111,59 +111,6 @@ model UserUpdateData {
     Analyzer             Analyzer[]
 }
 
-model Rate {
-    id                 String      @id @default(cuid())
-    rate               Int
-    belongToUser       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId             String
-    belongToStatistics Statistics? @relation(fields: [statisticsId], references: [id])
-    statisticsId       String?
-}
-
-model UsageTimestamps {
-    timestamp        DateTime    @id
-    usedByStatistics Statistics? @relation(fields: [statisticsId], references: [id])
-    statisticsId     String?
-}
-
-model ViewTimestamps {
-    timestamp        DateTime    @id
-    usedByStatistics Statistics? @relation(fields: [statisticsId], references: [id])
-    statisticsId     String?
-}
-
-model Statistics {
-    id              String            @id @default(cuid())
-    usageTimestamps UsageTimestamps[]
-    viewTimestamps  ViewTimestamps[]
-    rates           Rate[]
-
-    belongToMonster             Monster?             @relation(fields: [monsterId], references: [id], onDelete: Cascade)
-    monsterId                   String?              @unique
-    belongToCrystal             Crystal?             @relation(fields: [crystalId], references: [id])
-    crystalId                   String?              @unique
-    belongToMainWeapon          MainWeapon?          @relation(fields: [mainWeaponId], references: [id])
-    mainWeaponId                String?              @unique
-    belongToSubWeapon           SubWeapon?           @relation(fields: [subWeaponId], references: [id])
-    subWeaponId                 String?              @unique
-    belongToBodyArmor           BodyArmor?           @relation(fields: [bodyArmorId], references: [id])
-    bodyArmorId                 String?              @unique
-    belongToAdditionalEquipment AdditionalEquipment? @relation(fields: [additionalEquipmentId], references: [id])
-    additionalEquipmentId       String?              @unique
-    belongToSpecialEquipment    SpecialEquipment?    @relation(fields: [specialEquipmentId], references: [id])
-    specialEquipmentId          String?              @unique
-    belongToSkill               Skill?               @relation(fields: [skillId], references: [id])
-    skillId                     String?              @unique
-    belongToPet                 Pet?                 @relation(fields: [petId], references: [id])
-    petId                       String?              @unique
-    belongToConsumable          Consumable?          @relation(fields: [consumableId], references: [id])
-    consumableId                String?              @unique
-    Character                   Character?           @relation(fields: [characterId], references: [id], onDelete: Cascade)
-    characterId                 String?              @unique
-    Analyzer                    Analyzer?            @relation(fields: [analyzerId], references: [id], onDelete: Cascade)
-    analyzerId                  String?              @unique
-}
-
 // 可公开资源的状态枚举
 enum State {
     PRIVATE
@@ -370,62 +317,6 @@ model ModifiersList {
     usedByCuisine             Character?            @relation("CuisineRelation")
     usedByModifiersList       Character?            @relation("ModifiersListRelation")
     Consumable                Consumable[]
-}
-
-enum CharacterType {
-    Tank
-    Mage
-    Ranger
-    Marksman
-}
-
-// 机体模型
-model Character {
-    id            String        @id @default(cuid())
-    name          String
-    characterType CharacterType
-
-    lv                     Int
-    baseStr                Int
-    baseInt                Int
-    baseVit                Int
-    baseAgi                Int
-    baseDex                Int
-    specialAbiType         SpecialAbiType
-    specialAbiValue        Int
-    mainWeapon             MainWeapon          @relation(fields: [mainWeaponId], references: [id])
-    mainWeaponId           String
-    subWeapon              SubWeapon           @relation(fields: [subWeaponId], references: [id])
-    subWeaponId            String
-    bodyArmor              BodyArmor           @relation(fields: [bodyArmorId], references: [id])
-    bodyArmorId            String
-    additionalEquipment    AdditionalEquipment @relation(fields: [additionalEquipmentId], references: [id])
-    additionalEquipmentId  String
-    specialEquipment       SpecialEquipment    @relation(fields: [specialEquipmentId], references: [id])
-    specialEquipmentId     String
-    fashion                ModifiersList       @relation("FashionRelation", fields: [fashionModifiersListId], references: [id])
-    fashionModifiersListId String              @unique
-    cuisine                ModifiersList       @relation("CuisineRelation", fields: [CuisineModifiersListId], references: [id])
-    CuisineModifiersListId String              @unique
-    pet                    Pet                 @relation(fields: [petId], references: [id])
-    petId                  String
-    modifiersList          ModifiersList       @relation("ModifiersListRelation", fields: [modifiersListId], references: [id])
-    modifiersListId        String              @unique
-    skillList              Skill[]
-    consumableList         Consumable[]
-    combos                 Combo[]
-    belongToAnalyzers      Analyzer[]
-
-    extraDetails String?
-
-    updatedAt       DateTime        @updatedAt
-    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime
-    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
-    createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
 }
 
 // 特殊能力值类型枚举
@@ -812,29 +703,6 @@ model Consumable {
     statisticsId    String?
 }
 
-// 分析器模型
-model Analyzer {
-    id String @id @default(cuid())
-
-    name        String?
-    monster     Monster?   @relation(fields: [monsterId], references: [id])
-    monsterId   String?
-    character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
-    characterId String?
-    processes   Process[]
-
-    extraDetails String?
-
-    updatedAt       DateTime        @updatedAt
-    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
-    updatedByUserId String?
-    createdAt       DateTime
-    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
-    createdByUserId String?
-    statistics      Statistics?
-    statisticsId    String?
-}
-
 // 连击模型
 model Combo {
     id String @id @default(cuid())
@@ -863,6 +731,85 @@ model ComboStep {
     comboId       String
 }
 
+enum CharacterType {
+    Tank
+    Mage
+    Ranger
+    Marksman
+}
+
+// 机体模型
+model Character {
+    id            String        @id @default(cuid())
+    name          String
+    characterType CharacterType
+
+    lv                     Int
+    baseStr                Int
+    baseInt                Int
+    baseVit                Int
+    baseAgi                Int
+    baseDex                Int
+    specialAbiType         SpecialAbiType
+    specialAbiValue        Int
+    mainWeapon             MainWeapon          @relation(fields: [mainWeaponId], references: [id])
+    mainWeaponId           String
+    subWeapon              SubWeapon           @relation(fields: [subWeaponId], references: [id])
+    subWeaponId            String
+    bodyArmor              BodyArmor           @relation(fields: [bodyArmorId], references: [id])
+    bodyArmorId            String
+    additionalEquipment    AdditionalEquipment @relation(fields: [additionalEquipmentId], references: [id])
+    additionalEquipmentId  String
+    specialEquipment       SpecialEquipment    @relation(fields: [specialEquipmentId], references: [id])
+    specialEquipmentId     String
+    fashion                ModifiersList       @relation("FashionRelation", fields: [fashionModifiersListId], references: [id])
+    fashionModifiersListId String              @unique
+    cuisine                ModifiersList       @relation("CuisineRelation", fields: [CuisineModifiersListId], references: [id])
+    CuisineModifiersListId String              @unique
+    pet                    Pet                 @relation(fields: [petId], references: [id])
+    petId                  String
+    modifiersList          ModifiersList       @relation("ModifiersListRelation", fields: [modifiersListId], references: [id])
+    modifiersListId        String              @unique
+    skillList              Skill[]
+    consumableList         Consumable[]
+    combos                 Combo[]
+    belongToAnalyzers      Analyzer[]
+
+    extraDetails String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
+// 分析器模型
+model Analyzer {
+    id String @id @default(cuid())
+
+    name        String?
+    monster     Monster?   @relation(fields: [monsterId], references: [id])
+    monsterId   String?
+    character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    characterId String?
+    processes   Process[]
+
+    extraDetails String?
+
+    updatedAt       DateTime        @updatedAt
+    updatedBy       UserUpdateData? @relation(fields: [updatedByUserId], references: [userId])
+    updatedByUserId String?
+    createdAt       DateTime
+    createdBy       UserCreateData? @relation(fields: [createdByUserId], references: [userId])
+    createdByUserId String?
+    statistics      Statistics?
+    statisticsId    String?
+}
+
 // 输出流程模型
 model Process {
     id String @id @default(cuid())
@@ -883,4 +830,57 @@ model Step {
 
     belongToProcess Process @relation(fields: [processId], references: [id], onDelete: Cascade)
     processId       String
+}
+
+model Statistics {
+    id              String            @id @default(cuid())
+    usageTimestamps UsageTimestamps[]
+    viewTimestamps  ViewTimestamps[]
+    rates           Rate[]
+
+    belongToMonster             Monster?             @relation(fields: [monsterId], references: [id], onDelete: Cascade)
+    monsterId                   String?              @unique
+    belongToCrystal             Crystal?             @relation(fields: [crystalId], references: [id])
+    crystalId                   String?              @unique
+    belongToMainWeapon          MainWeapon?          @relation(fields: [mainWeaponId], references: [id])
+    mainWeaponId                String?              @unique
+    belongToSubWeapon           SubWeapon?           @relation(fields: [subWeaponId], references: [id])
+    subWeaponId                 String?              @unique
+    belongToBodyArmor           BodyArmor?           @relation(fields: [bodyArmorId], references: [id])
+    bodyArmorId                 String?              @unique
+    belongToAdditionalEquipment AdditionalEquipment? @relation(fields: [additionalEquipmentId], references: [id])
+    additionalEquipmentId       String?              @unique
+    belongToSpecialEquipment    SpecialEquipment?    @relation(fields: [specialEquipmentId], references: [id])
+    specialEquipmentId          String?              @unique
+    belongToSkill               Skill?               @relation(fields: [skillId], references: [id])
+    skillId                     String?              @unique
+    belongToPet                 Pet?                 @relation(fields: [petId], references: [id])
+    petId                       String?              @unique
+    belongToConsumable          Consumable?          @relation(fields: [consumableId], references: [id])
+    consumableId                String?              @unique
+    Character                   Character?           @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    characterId                 String?              @unique
+    Analyzer                    Analyzer?            @relation(fields: [analyzerId], references: [id], onDelete: Cascade)
+    analyzerId                  String?              @unique
+}
+
+model Rate {
+    id                 String      @id @default(cuid())
+    rate               Int
+    belongToUser       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId             String
+    belongToStatistics Statistics? @relation(fields: [statisticsId], references: [id])
+    statisticsId       String?
+}
+
+model UsageTimestamps {
+    timestamp        DateTime    @id
+    usedByStatistics Statistics? @relation(fields: [statisticsId], references: [id])
+    statisticsId     String?
+}
+
+model ViewTimestamps {
+    timestamp        DateTime    @id
+    usedByStatistics Statistics? @relation(fields: [statisticsId], references: [id])
+    statisticsId     String?
 }
