@@ -834,8 +834,8 @@ model Step {
 
 model Statistics {
     id              String            @id @default(cuid())
-    usageTimestamps UsageTimestamps[]
-    viewTimestamps  ViewTimestamps[]
+    usageTimestamps UsageTimestamp[]
+    viewTimestamps  ViewTimestamp[]
     rates           Rate[]
 
     belongToMonster             Monster?             @relation(fields: [monsterId], references: [id], onDelete: Cascade)
@@ -873,13 +873,13 @@ model Rate {
     statisticsId       String?
 }
 
-model UsageTimestamps {
+model UsageTimestamp {
     timestamp        DateTime    @id
     usedByStatistics Statistics? @relation(fields: [statisticsId], references: [id])
     statisticsId     String?
 }
 
-model ViewTimestamps {
+model ViewTimestamp {
     timestamp        DateTime    @id
     usedByStatistics Statistics? @relation(fields: [statisticsId], references: [id])
     statisticsId     String?

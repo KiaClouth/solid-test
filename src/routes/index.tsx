@@ -152,7 +152,7 @@ export default function Home() {
     const scopedDbName = `idb://basic-${LIB_VERSION}-${tabId}.db`;
     const config = {
       debug: import.meta.env.DEV,
-      url: import.meta.env.ELECTRIC_SERVICE,
+      url: import.meta.env.ELECTRIC_URL,
     };
     const conn = new PGlite(scopedDbName, {
       relaxedDurability: true,
