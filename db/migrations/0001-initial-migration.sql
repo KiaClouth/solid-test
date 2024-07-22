@@ -499,19 +499,19 @@ CREATE TABLE "Rate" (
 );
 
 -- CreateTable
-CREATE TABLE "UsageTimestamps" (
+CREATE TABLE "UsageTimestamp" (
     "timestamp" TIMESTAMP(3) NOT NULL,
     "statisticsId" TEXT,
 
-    CONSTRAINT "UsageTimestamps_pkey" PRIMARY KEY ("timestamp")
+    CONSTRAINT "UsageTimestamp_pkey" PRIMARY KEY ("timestamp")
 );
 
 -- CreateTable
-CREATE TABLE "ViewTimestamps" (
+CREATE TABLE "ViewTimestamp" (
     "timestamp" TIMESTAMP(3) NOT NULL,
     "statisticsId" TEXT,
 
-    CONSTRAINT "ViewTimestamps_pkey" PRIMARY KEY ("timestamp")
+    CONSTRAINT "ViewTimestamp_pkey" PRIMARY KEY ("timestamp")
 );
 
 -- CreateTable
@@ -884,10 +884,10 @@ ALTER TABLE "Rate" ADD CONSTRAINT "Rate_userId_fkey" FOREIGN KEY ("userId") REFE
 ALTER TABLE "Rate" ADD CONSTRAINT "Rate_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UsageTimestamps" ADD CONSTRAINT "UsageTimestamps_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "UsageTimestamp" ADD CONSTRAINT "UsageTimestamp_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ViewTimestamps" ADD CONSTRAINT "ViewTimestamps_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ViewTimestamp" ADD CONSTRAINT "ViewTimestamp_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ModifierToModifiersList" ADD CONSTRAINT "_ModifierToModifiersList_A_fkey" FOREIGN KEY ("A") REFERENCES "Modifier"("id") ON DELETE CASCADE ON UPDATE CASCADE;
