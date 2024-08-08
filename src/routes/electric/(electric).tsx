@@ -143,7 +143,7 @@ const ElectricApp = () => {
   );
 };
 
-export default function Home() {
+export default function ElectricHome() {
   const [electric, setElectric] = createSignal<Electric>();
 
   onMount(async () => {

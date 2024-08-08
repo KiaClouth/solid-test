@@ -159,7 +159,7 @@ CREATE TABLE "Monster" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "Monster_pkey" PRIMARY KEY ("id")
 );
@@ -193,7 +193,7 @@ CREATE TABLE "Crystal" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "Crystal_pkey" PRIMARY KEY ("id")
 );
@@ -214,7 +214,7 @@ CREATE TABLE "MainWeapon" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "MainWeapon_pkey" PRIMARY KEY ("id")
 );
@@ -235,7 +235,7 @@ CREATE TABLE "SubWeapon" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "SubWeapon_pkey" PRIMARY KEY ("id")
 );
@@ -254,7 +254,7 @@ CREATE TABLE "BodyArmor" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "BodyArmor_pkey" PRIMARY KEY ("id")
 );
@@ -271,7 +271,7 @@ CREATE TABLE "AdditionalEquipment" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "AdditionalEquipment_pkey" PRIMARY KEY ("id")
 );
@@ -287,7 +287,7 @@ CREATE TABLE "SpecialEquipment" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "SpecialEquipment_pkey" PRIMARY KEY ("id")
 );
@@ -307,7 +307,7 @@ CREATE TABLE "Skill" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "Skill_pkey" PRIMARY KEY ("id")
 );
@@ -362,7 +362,7 @@ CREATE TABLE "Pet" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "Pet_pkey" PRIMARY KEY ("id")
 );
@@ -378,7 +378,7 @@ CREATE TABLE "Consumable" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "Consumable_pkey" PRIMARY KEY ("id")
 );
@@ -430,7 +430,7 @@ CREATE TABLE "Character" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "Character_pkey" PRIMARY KEY ("id")
 );
@@ -446,7 +446,7 @@ CREATE TABLE "Analyzer" (
     "updatedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL,
     "createdByUserId" TEXT,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "Analyzer_pkey" PRIMARY KEY ("id")
 );
@@ -493,7 +493,7 @@ CREATE TABLE "Rate" (
     "id" TEXT NOT NULL,
     "rate" INTEGER NOT NULL,
     "userId" TEXT NOT NULL,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "Rate_pkey" PRIMARY KEY ("id")
 );
@@ -501,7 +501,7 @@ CREATE TABLE "Rate" (
 -- CreateTable
 CREATE TABLE "UsageTimestamp" (
     "timestamp" TIMESTAMP(3) NOT NULL,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "UsageTimestamp_pkey" PRIMARY KEY ("timestamp")
 );
@@ -509,7 +509,7 @@ CREATE TABLE "UsageTimestamp" (
 -- CreateTable
 CREATE TABLE "ViewTimestamp" (
     "timestamp" TIMESTAMP(3) NOT NULL,
-    "statisticsId" TEXT,
+    "statisticsId" TEXT NOT NULL,
 
     CONSTRAINT "ViewTimestamp_pkey" PRIMARY KEY ("timestamp")
 );
@@ -581,6 +581,36 @@ CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationTok
 CREATE INDEX "Post_name_idx" ON "Post"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Monster_statisticsId_key" ON "Monster"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Crystal_statisticsId_key" ON "Crystal"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "MainWeapon_statisticsId_key" ON "MainWeapon"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SubWeapon_statisticsId_key" ON "SubWeapon"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BodyArmor_statisticsId_key" ON "BodyArmor"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "AdditionalEquipment_statisticsId_key" ON "AdditionalEquipment"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "SpecialEquipment_statisticsId_key" ON "SpecialEquipment"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Skill_statisticsId_key" ON "Skill"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Pet_statisticsId_key" ON "Pet"("statisticsId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Consumable_statisticsId_key" ON "Consumable"("statisticsId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Character_fashionModifiersListId_key" ON "Character"("fashionModifiersListId");
 
 -- CreateIndex
@@ -590,40 +620,10 @@ CREATE UNIQUE INDEX "Character_CuisineModifiersListId_key" ON "Character"("Cuisi
 CREATE UNIQUE INDEX "Character_modifiersListId_key" ON "Character"("modifiersListId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Statistics_monsterId_key" ON "Statistics"("monsterId");
+CREATE UNIQUE INDEX "Character_statisticsId_key" ON "Character"("statisticsId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Statistics_crystalId_key" ON "Statistics"("crystalId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_mainWeaponId_key" ON "Statistics"("mainWeaponId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_subWeaponId_key" ON "Statistics"("subWeaponId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_bodyArmorId_key" ON "Statistics"("bodyArmorId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_additionalEquipmentId_key" ON "Statistics"("additionalEquipmentId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_specialEquipmentId_key" ON "Statistics"("specialEquipmentId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_skillId_key" ON "Statistics"("skillId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_petId_key" ON "Statistics"("petId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_consumableId_key" ON "Statistics"("consumableId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_characterId_key" ON "Statistics"("characterId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Statistics_analyzerId_key" ON "Statistics"("analyzerId");
+CREATE UNIQUE INDEX "Analyzer_statisticsId_key" ON "Analyzer"("statisticsId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_ModifierToModifiersList_AB_unique" ON "_ModifierToModifiersList"("A", "B");
@@ -695,6 +695,9 @@ ALTER TABLE "Monster" ADD CONSTRAINT "Monster_updatedByUserId_fkey" FOREIGN KEY 
 ALTER TABLE "Monster" ADD CONSTRAINT "Monster_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Monster" ADD CONSTRAINT "Monster_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Crystal" ADD CONSTRAINT "Crystal_modifiersListId_fkey" FOREIGN KEY ("modifiersListId") REFERENCES "ModifiersList"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -702,6 +705,9 @@ ALTER TABLE "Crystal" ADD CONSTRAINT "Crystal_updatedByUserId_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "Crystal" ADD CONSTRAINT "Crystal_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Crystal" ADD CONSTRAINT "Crystal_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MainWeapon" ADD CONSTRAINT "MainWeapon_modifiersListId_fkey" FOREIGN KEY ("modifiersListId") REFERENCES "ModifiersList"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -713,6 +719,9 @@ ALTER TABLE "MainWeapon" ADD CONSTRAINT "MainWeapon_updatedByUserId_fkey" FOREIG
 ALTER TABLE "MainWeapon" ADD CONSTRAINT "MainWeapon_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "MainWeapon" ADD CONSTRAINT "MainWeapon_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "SubWeapon" ADD CONSTRAINT "SubWeapon_modifiersListId_fkey" FOREIGN KEY ("modifiersListId") REFERENCES "ModifiersList"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -720,6 +729,9 @@ ALTER TABLE "SubWeapon" ADD CONSTRAINT "SubWeapon_updatedByUserId_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "SubWeapon" ADD CONSTRAINT "SubWeapon_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SubWeapon" ADD CONSTRAINT "SubWeapon_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BodyArmor" ADD CONSTRAINT "BodyArmor_modifiersListId_fkey" FOREIGN KEY ("modifiersListId") REFERENCES "ModifiersList"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -731,6 +743,9 @@ ALTER TABLE "BodyArmor" ADD CONSTRAINT "BodyArmor_updatedByUserId_fkey" FOREIGN 
 ALTER TABLE "BodyArmor" ADD CONSTRAINT "BodyArmor_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "BodyArmor" ADD CONSTRAINT "BodyArmor_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "AdditionalEquipment" ADD CONSTRAINT "AdditionalEquipment_modifiersListId_fkey" FOREIGN KEY ("modifiersListId") REFERENCES "ModifiersList"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -738,6 +753,9 @@ ALTER TABLE "AdditionalEquipment" ADD CONSTRAINT "AdditionalEquipment_updatedByU
 
 -- AddForeignKey
 ALTER TABLE "AdditionalEquipment" ADD CONSTRAINT "AdditionalEquipment_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AdditionalEquipment" ADD CONSTRAINT "AdditionalEquipment_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "SpecialEquipment" ADD CONSTRAINT "SpecialEquipment_modifiersListId_fkey" FOREIGN KEY ("modifiersListId") REFERENCES "ModifiersList"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -749,10 +767,16 @@ ALTER TABLE "SpecialEquipment" ADD CONSTRAINT "SpecialEquipment_updatedByUserId_
 ALTER TABLE "SpecialEquipment" ADD CONSTRAINT "SpecialEquipment_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "SpecialEquipment" ADD CONSTRAINT "SpecialEquipment_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Skill" ADD CONSTRAINT "Skill_updatedByUserId_fkey" FOREIGN KEY ("updatedByUserId") REFERENCES "UserUpdateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Skill" ADD CONSTRAINT "Skill_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Skill" ADD CONSTRAINT "Skill_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "SkillEffect" ADD CONSTRAINT "SkillEffect_belongToskillId_fkey" FOREIGN KEY ("belongToskillId") REFERENCES "Skill"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -770,6 +794,9 @@ ALTER TABLE "Pet" ADD CONSTRAINT "Pet_updatedByUserId_fkey" FOREIGN KEY ("update
 ALTER TABLE "Pet" ADD CONSTRAINT "Pet_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Pet" ADD CONSTRAINT "Pet_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Consumable" ADD CONSTRAINT "Consumable_modifiersListId_fkey" FOREIGN KEY ("modifiersListId") REFERENCES "ModifiersList"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -777,6 +804,9 @@ ALTER TABLE "Consumable" ADD CONSTRAINT "Consumable_updatedByUserId_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "Consumable" ADD CONSTRAINT "Consumable_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Consumable" ADD CONSTRAINT "Consumable_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Combo" ADD CONSTRAINT "Combo_userCreateUserId_fkey" FOREIGN KEY ("userCreateUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -821,6 +851,9 @@ ALTER TABLE "Character" ADD CONSTRAINT "Character_updatedByUserId_fkey" FOREIGN 
 ALTER TABLE "Character" ADD CONSTRAINT "Character_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Character" ADD CONSTRAINT "Character_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Analyzer" ADD CONSTRAINT "Analyzer_monsterId_fkey" FOREIGN KEY ("monsterId") REFERENCES "Monster"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -833,6 +866,9 @@ ALTER TABLE "Analyzer" ADD CONSTRAINT "Analyzer_updatedByUserId_fkey" FOREIGN KE
 ALTER TABLE "Analyzer" ADD CONSTRAINT "Analyzer_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "UserCreateData"("userId") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Analyzer" ADD CONSTRAINT "Analyzer_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Process" ADD CONSTRAINT "Process_analyzerId_fkey" FOREIGN KEY ("analyzerId") REFERENCES "Analyzer"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -842,52 +878,16 @@ ALTER TABLE "Step" ADD CONSTRAINT "Step_skillId_fkey" FOREIGN KEY ("skillId") RE
 ALTER TABLE "Step" ADD CONSTRAINT "Step_processId_fkey" FOREIGN KEY ("processId") REFERENCES "Process"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_monsterId_fkey" FOREIGN KEY ("monsterId") REFERENCES "Monster"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_crystalId_fkey" FOREIGN KEY ("crystalId") REFERENCES "Crystal"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_mainWeaponId_fkey" FOREIGN KEY ("mainWeaponId") REFERENCES "MainWeapon"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_subWeaponId_fkey" FOREIGN KEY ("subWeaponId") REFERENCES "SubWeapon"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_bodyArmorId_fkey" FOREIGN KEY ("bodyArmorId") REFERENCES "BodyArmor"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_additionalEquipmentId_fkey" FOREIGN KEY ("additionalEquipmentId") REFERENCES "AdditionalEquipment"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_specialEquipmentId_fkey" FOREIGN KEY ("specialEquipmentId") REFERENCES "SpecialEquipment"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_skillId_fkey" FOREIGN KEY ("skillId") REFERENCES "Skill"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_petId_fkey" FOREIGN KEY ("petId") REFERENCES "Pet"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_consumableId_fkey" FOREIGN KEY ("consumableId") REFERENCES "Consumable"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_characterId_fkey" FOREIGN KEY ("characterId") REFERENCES "Character"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Statistics" ADD CONSTRAINT "Statistics_analyzerId_fkey" FOREIGN KEY ("analyzerId") REFERENCES "Analyzer"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Rate" ADD CONSTRAINT "Rate_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Rate" ADD CONSTRAINT "Rate_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Rate" ADD CONSTRAINT "Rate_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UsageTimestamp" ADD CONSTRAINT "UsageTimestamp_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "UsageTimestamp" ADD CONSTRAINT "UsageTimestamp_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ViewTimestamp" ADD CONSTRAINT "ViewTimestamp_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "ViewTimestamp" ADD CONSTRAINT "ViewTimestamp_statisticsId_fkey" FOREIGN KEY ("statisticsId") REFERENCES "Statistics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ModifierToModifiersList" ADD CONSTRAINT "_ModifierToModifiersList_A_fkey" FOREIGN KEY ("A") REFERENCES "Modifier"("id") ON DELETE CASCADE ON UPDATE CASCADE;
